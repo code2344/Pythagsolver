@@ -51,11 +51,14 @@
         <button onclick="generateKeyPair()">Generate RSA Key Pair</button>
         <button onclick="downloadKeys()">Download Key Pair</button>
 
-        <h3>Public Key:</h3>
+        <h3>Your Public Key:</h3>
         <textarea id="publicKey" rows="5" readonly></textarea>
 
-        <h3>Private Key:</h3>
+        <h3>Your Private Key:</h3>
         <textarea id="privateKey" rows="5" readonly></textarea>
+
+        <h3>Friend's Public Key (Paste here):</h3>
+        <textarea id="friendsPublicKey" rows="5"></textarea>
 
         <h3>Message to Encrypt:</h3>
         <textarea id="messageToEncrypt" rows="4"></textarea>
@@ -174,19 +177,21 @@
 
         async function encryptMessage() {
             const message = document.getElementById("messageToEncrypt").value;
+            const friendPublicKeyPem = document.getElementById("friendsPublicKey").value;
 
-            if (!message) {
-                alert("Please enter a message to encrypt.");
+            if (!message || !friendPublicKeyPem) {
+                alert("Please enter both a message and your friend's public key.");
                 return;
             }
 
-            const encoder = new TextEncoder();
-            const encodedMessage = encoder.encode(message);
-
             try {
+                const friendPublicKey = await importPublicKey(friendPublicKeyPem);
+                const encoder = new TextEncoder();
+                const encodedMessage = encoder.encode(message);
+
                 const encryptedMessage = await window.crypto.subtle.encrypt(
                     { name: "RSA-OAEP" },
-                    publicKey,
+                    friendPublicKey,
                     encodedMessage
                 );
 
@@ -195,6 +200,28 @@
             } catch (error) {
                 console.error("Error encrypting message:", error);
             }
+        }
+
+        async function importPublicKey(publicKeyPem) {
+            // Remove PEM headers and footers
+            const pemHeader = "-----BEGIN PUBLIC KEY-----";
+            const pemFooter = "-----END PUBLIC KEY-----";
+            const pemContents = publicKeyPem.replace(pemHeader, "").replace(pemFooter, "").replace(/\s+/g, "");
+
+            const binaryDer = window.atob(pemContents);
+            const binaryDerArray = new Uint8Array(binaryDer.length);
+
+            for (let i = 0; i < binaryDer.length; i++) {
+                binaryDerArray[i] = binaryDer.charCodeAt(i);
+            }
+
+            return window.crypto.subtle.importKey(
+                "spki",
+                binaryDerArray.buffer,
+                { name: "RSA-OAEP", hash: "SHA-256" },
+                true,
+                ["encrypt"]
+            );
         }
 
         async function decryptMessage() {
