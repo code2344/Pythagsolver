@@ -76,38 +76,40 @@
         let publicKey;
 
         async function generateKeyPair() {
-            // Generate RSA key pair
-            const keys = await window.crypto.subtle.generateKey(
-                {
-                    name: "RSA-OAEP",
-                    modulusLength: 2048,
-                    publicExponent: new Uint8Array([1, 0, 1]),
-                    hash: "SHA-256",
-                },
-                true,
-                ["encrypt", "decrypt"]
-            );
+            try {
+                // Generate RSA key pair
+                const keys = await window.crypto.subtle.generateKey(
+                    {
+                        name: "RSA-OAEP",
+                        modulusLength: 2048,
+                        publicExponent: new Uint8Array([1, 0, 1]),
+                        hash: "SHA-256",
+                    },
+                    true,
+                    ["encrypt", "decrypt"]
+                );
 
-            publicKey = keys.publicKey;
-            privateKey = keys.privateKey;
+                publicKey = keys.publicKey;
+                privateKey = keys.privateKey;
 
-            // Export keys to PEM format
-            const exportedPublicKey = await exportKey(publicKey);
-            const exportedPrivateKey = await exportKey(privateKey);
+                // Export keys to PEM format
+                const exportedPublicKey = await exportKey(publicKey);
+                const exportedPrivateKey = await exportKey(privateKey, 'private');
 
-            // Display the keys
-            document.getElementById("publicKey").value = exportedPublicKey;
-            document.getElementById("privateKey").value = exportedPrivateKey;
+                // Display the keys
+                document.getElementById("publicKey").value = exportedPublicKey;
+                document.getElementById("privateKey").value = exportedPrivateKey;
+
+                alert("Key Pair Generated Successfully!");
+            } catch (error) {
+                console.error("Error generating keys:", error);
+            }
         }
 
-        async function exportKey(key) {
-            const exported = await window.crypto.subtle.exportKey("spki", key);
-            return arrayBufferToPem(exported, 'PUBLIC KEY');
-        }
-
-        async function exportPrivateKey(key) {
-            const exported = await window.crypto.subtle.exportKey("pkcs8", key);
-            return arrayBufferToPem(exported, 'PRIVATE KEY');
+        async function exportKey(key, type = 'public') {
+            const format = type === 'public' ? 'spki' : 'pkcs8';
+            const exported = await window.crypto.subtle.exportKey(format, key);
+            return arrayBufferToPem(exported, type === 'public' ? 'PUBLIC KEY' : 'PRIVATE KEY');
         }
 
         function arrayBufferToPem(buffer, type) {
@@ -120,33 +122,51 @@
         async function encryptMessage() {
             const message = document.getElementById("messageToEncrypt").value;
 
+            if (!message) {
+                alert("Please enter a message to encrypt.");
+                return;
+            }
+
             const encoder = new TextEncoder();
             const encodedMessage = encoder.encode(message);
 
-            const encryptedMessage = await window.crypto.subtle.encrypt(
-                { name: "RSA-OAEP" },
-                publicKey,
-                encodedMessage
-            );
+            try {
+                const encryptedMessage = await window.crypto.subtle.encrypt(
+                    { name: "RSA-OAEP" },
+                    publicKey,
+                    encodedMessage
+                );
 
-            const encryptedBase64 = arrayBufferToBase64(encryptedMessage);
-            document.getElementById("encryptedMessage").value = encryptedBase64;
+                const encryptedBase64 = arrayBufferToBase64(encryptedMessage);
+                document.getElementById("encryptedMessage").value = encryptedBase64;
+            } catch (error) {
+                console.error("Error encrypting message:", error);
+            }
         }
 
         async function decryptMessage() {
             const encryptedMessage = document.getElementById("messageToDecrypt").value;
 
+            if (!encryptedMessage) {
+                alert("Please enter a message to decrypt.");
+                return;
+            }
+
             const encryptedBuffer = base64ToArrayBuffer(encryptedMessage);
 
-            const decryptedMessage = await window.crypto.subtle.decrypt(
-                { name: "RSA-OAEP" },
-                privateKey,
-                encryptedBuffer
-            );
+            try {
+                const decryptedMessage = await window.crypto.subtle.decrypt(
+                    { name: "RSA-OAEP" },
+                    privateKey,
+                    encryptedBuffer
+                );
 
-            const decoder = new TextDecoder();
-            const decodedMessage = decoder.decode(decryptedMessage);
-            document.getElementById("decryptedMessage").value = decodedMessage;
+                const decoder = new TextDecoder();
+                const decodedMessage = decoder.decode(decryptedMessage);
+                document.getElementById("decryptedMessage").value = decodedMessage;
+            } catch (error) {
+                console.error("Error decrypting message:", error);
+            }
         }
 
         function arrayBufferToBase64(buffer) {
