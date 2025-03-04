@@ -348,12 +348,12 @@
                 form.style.display = 'none';
             });
 
-            if (selected === 'a') {
+            if (selected === 'c') {
+                document.getElementById('cForm').style.display = 'block';
+            } else if (selected === 'a') {
                 document.getElementById('aForm').style.display = 'block';
             } else if (selected === 'b') {
                 document.getElementById('bForm').style.display = 'block';
-            } else if (selected === 'c') {
-                document.getElementById('cForm').style.display = 'block';
             }
         }
 
