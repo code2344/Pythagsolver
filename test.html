@@ -103,6 +103,7 @@
         <a href="#" onclick="showCalculator('matrices')">Matrices & Determinants</a>
         <a href="#" onclick="showCalculator('circle')">Circle Geometry</a>
         <a href="#" onclick="showCalculator('factorization')">Factorization</a>
+        <a href="#" onclick="showCalculator('pythagorean')">Pythagorean</a>
     </div>
 
     <!-- Quadratic Equation Solver -->
@@ -287,6 +288,128 @@
         <button onclick="factorizeNumber()">Factorize</button>
         <div id="factorizationResult" class="result"></div>
     </div>
+
+    <!-- Pythagorean Theorem Calculator -->
+    <div id="pythagorean" class="container calculator">
+        <h3>Pythagorean Theorem Calculator</h3>
+        
+        <!-- Select which side to calculate -->
+        <p>Select the known sides (a, b, or c):</p>
+        <select id="pythagoreanSelect" onchange="changePythagoreanForm()">
+            <option value="a">Side a (Leg)</option>
+            <option value="b">Side b (Leg)</option>
+            <option value="c">Hypotenuse (c)</option>
+        </select>
+
+        <!-- Form for calculating side 'a' -->
+        <div id="aForm" class="pythagoreanForm">
+            <label for="pythagoreanB">Enter value for b (Leg):</label>
+            <input type="number" id="pythagoreanB" placeholder="b">
+            <label for="pythagoreanC">Enter value for c (Hypotenuse):</label>
+            <input type="number" id="pythagoreanC" placeholder="c">
+            <button onclick="calculateSideA()">Calculate a</button>
+        </div>
+
+        <!-- Form for calculating side 'b' -->
+        <div id="bForm" class="pythagoreanForm" style="display: none;">
+            <label for="pythagoreanA">Enter value for a (Leg):</label>
+            <input type="number" id="pythagoreanA" placeholder="a">
+            <label for="pythagoreanC">Enter value for c (Hypotenuse):</label>
+            <input type="number" id="pythagoreanC2" placeholder="c">
+            <button onclick="calculateSideB()">Calculate b</button>
+        </div>
+
+        <!-- Form for calculating side 'c' -->
+        <div id="cForm" class="pythagoreanForm" style="display: none;">
+            <label for="pythagoreanA">Enter value for a (Leg):</label>
+            <input type="number" id="pythagoreanA2" placeholder="a">
+            <label for="pythagoreanB">Enter value for b (Leg):</label>
+            <input type="number" id="pythagoreanB2" placeholder="b">
+            <button onclick="calculateSideC()">Calculate c</button>
+        </div>
+
+        <div id="pythagoreanResult" class="result"></div>
+    </div>
+
+    <script>
+        // Function to show the selected calculator
+        function showCalculator(calcId) {
+            const calculators = document.querySelectorAll('.calculator');
+            calculators.forEach(calc => {
+                calc.classList.remove('active');
+            });
+            document.getElementById(calcId).classList.add('active');
+        }
+
+        // Function to change the form based on selected side
+        function changePythagoreanForm() {
+            const selected = document.getElementById('pythagoreanSelect').value;
+            document.querySelectorAll('.pythagoreanForm').forEach(form => {
+                form.style.display = 'none';
+            });
+
+            if (selected === 'a') {
+                document.getElementById('aForm').style.display = 'block';
+            } else if (selected === 'b') {
+                document.getElementById('bForm').style.display = 'block';
+            } else if (selected === 'c') {
+                document.getElementById('cForm').style.display = 'block';
+            }
+        }
+
+        // Function to calculate side 'a'
+        function calculateSideA() {
+            var b = parseFloat(document.getElementById("pythagoreanB").value);
+            var c = parseFloat(document.getElementById("pythagoreanC").value);
+            if (isNaN(b) || isNaN(c) || c <= b) {
+                document.getElementById("pythagoreanResult").innerHTML = "Please enter valid numbers. c should be greater than b.";
+                return;
+            }
+            var a = Math.sqrt(c * c - b * b);
+            document.getElementById("pythagoreanResult").innerHTML = `Side a: ${a.toFixed(2)}`;
+        }
+
+        // Function to calculate side 'b'
+        function calculateSideB() {
+            var a = parseFloat(document.getElementById("pythagoreanA").value);
+            var c = parseFloat(document.getElementById("pythagoreanC2").value);
+            if (isNaN(a) || isNaN(c) || c <= a) {
+                document.getElementById("pythagoreanResult").innerHTML = "Please enter valid numbers. c should be greater than a.";
+                return;
+            }
+            var b = Math.sqrt(c * c - a * a);
+            document.getElementById("pythagoreanResult").innerHTML = `Side b: ${b.toFixed(2)}`;
+        }
+
+        // Function to calculate hypotenuse 'c'
+        function calculateSideC() {
+            var a = parseFloat(document.getElementById("pythagoreanA2").value);
+            var b = parseFloat(document.getElementById("pythagoreanB2").value);
+            if (isNaN(a) || isNaN(b)) {
+                document.getElementById("pythagoreanResult").innerHTML = "Please enter valid numbers.";
+                return;
+            }
+            var c = Math.sqrt(a * a + b * b);
+            document.getElementById("pythagoreanResult").innerHTML = `Hypotenuse c: ${c.toFixed(2)}`;
+        }
+
+        // To check if the triangle is a right triangle
+        function checkRightTriangle() {
+            var a = parseFloat(document.getElementById("pythagoreanA").value);
+            var b = parseFloat(document.getElementById("pythagoreanB").value);
+            var c = parseFloat(document.getElementById("pythagoreanC").value);
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                document.getElementById("pythagoreanResult").innerHTML = "Please enter valid numbers.";
+                return;
+            }
+            var isRightTriangle = (a * a + b * b === c * c);
+            if (isRightTriangle) {
+                document.getElementById("pythagoreanResult").innerHTML = "This is a right triangle!";
+            } else {
+                document.getElementById("pythagoreanResult").innerHTML = "This is not a right triangle.";
+            }
+        }
+    </script>
 
     <script>
         // Show the selected calculator
