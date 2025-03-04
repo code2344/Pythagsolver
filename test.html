@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Calculator Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .navbar {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            padding: 10px;
+        }
+        .navbar a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+            font-size: 18px;
+        }
+        .navbar a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        .container {
+            width: 100%;
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .calculator {
+            display: none;
+        }
+        .active {
+            display: block;
+        }
+        .input-field {
+            margin-bottom: 15px;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+            text-align: center;
+        }
+        .calc-button {
+            font-size: 18px;
+            padding: 10px;
+            margin: 5px;
+            cursor: pointer;
+        }
+        .calc-button:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Multi-Calculator Page</h1>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <a href="#" onclick="showCalculator('quadratic')">Quadratic Solver</a>
+        <a href="#" onclick="showCalculator('scientific')">Scientific Calculator</a>
+        <a href="#" onclick="showCalculator('areaVolume')">Area & Volume Calculator</a>
+        <a href="#" onclick="showCalculator('vector')">Vector Calculator</a>
+        <a href="#" onclick="showCalculator('probability')">Probability Calculator</a>
+        <a href="#" onclick="showCalculator('exponentiation')">Exponentiation & Log</a>
+        <a href="#" onclick="showCalculator('simultaneous')">Simultaneous Equations</a>
+        <a href="#" onclick="showCalculator('matrices')">Matrices & Determinants</a>
+        <a href="#" onclick="showCalculator('circle')">Circle Geometry</a>
+        <a href="#" onclick="showCalculator('factorization')">Factorization</a>
+    </div>
+
+    <!-- Quadratic Equation Solver -->
+    <div id="quadratic" class="container calculator active">
+        <h3>Quadratic Equation Solver</h3>
+        <div class="input-field">
+            <label for="a">Enter value for a:</label>
+            <input type="number" id="a" placeholder="a" required>
+        </div>
+        <div class="input-field">
+            <label for="b">Enter value for b:</label>
+            <input type="number" id="b" placeholder="b" required>
+        </div>
+        <div class="input-field">
+            <label for="c">Enter value for c:</label>
+            <input type="number" id="c" placeholder="c" required>
+        </div>
+        <button onclick="solveQuadratic()">Solve</button>
+        <div id="result" class="result"></div>
+    </div>
+
+    <!-- Scientific Calculator -->
+    <div id="scientific" class="container calculator">
+        <h3>Scientific Calculator</h3>
+        <input type="text" id="scientificInput" readonly>
+        <div>
+            <button class="calc-button" onclick="appendNumber(7)">7</button>
+            <button class="calc-button" onclick="appendNumber(8)">8</button>
+            <button class="calc-button" onclick="appendNumber(9)">9</button>
+            <button class="calc-button" onclick="appendOperator('+')">+</button>
+        </div>
+        <div>
+            <button class="calc-button" onclick="appendNumber(4)">4</button>
+            <button class="calc-button" onclick="appendNumber(5)">5</button>
+            <button class="calc-button" onclick="appendNumber(6)">6</button>
+            <button class="calc-button" onclick="appendOperator('-')">-</button>
+        </div>
+        <div>
+            <button class="calc-button" onclick="appendNumber(1)">1</button>
+            <button class="calc-button" onclick="appendNumber(2)">2</button>
+            <button class="calc-button" onclick="appendNumber(3)">3</button>
+            <button class="calc-button" onclick="appendOperator('*')">*</button>
+        </div>
+        <div>
+            <button class="calc-button" onclick="appendNumber(0)">0</button>
+            <button class="calc-button" onclick="clearScientific()">C</button>
+            <button class="calc-button" onclick="calculateScientific()">=</button>
+            <button class="calc-button" onclick="appendOperator('/')">/</button>
+        </div>
+    </div>
+
+    <!-- Area and Volume Calculator -->
+    <div id="areaVolume" class="container calculator">
+        <h3>Area & Volume Calculator</h3>
+        <p>Choose shape:</p>
+        <select id="shapeSelector" onchange="changeShape()">
+            <option value="circle">Circle</option>
+            <option value="rectangle">Rectangle</option>
+            <option value="sphere">Sphere</option>
+        </select>
+        <div id="circleForm" class="shapeForm">
+            <label for="circleRadius">Radius:</label>
+            <input type="number" id="circleRadius" placeholder="Radius">
+            <button onclick="calculateCircle()">Calculate Area & Circumference</button>
+        </div>
+        <div id="rectangleForm" class="shapeForm" style="display: none;">
+            <label for="rectangleLength">Length:</label>
+            <input type="number" id="rectangleLength" placeholder="Length">
+            <label for="rectangleWidth">Width:</label>
+            <input type="number" id="rectangleWidth" placeholder="Width">
+            <button onclick="calculateRectangle()">Calculate Area</button>
+        </div>
+        <div id="sphereForm" class="shapeForm" style="display: none;">
+            <label for="sphereRadius">Radius:</label>
+            <input type="number" id="sphereRadius" placeholder="Radius">
+            <button onclick="calculateSphere()">Calculate Volume</button>
+        </div>
+        <div id="areaVolumeResult" class="result"></div>
+    </div>
+
+    <!-- Vector Calculator -->
+    <div id="vector" class="container calculator">
+        <h3>Vector Calculator</h3>
+        <p>For simplicity, we will just do dot product calculation:</p>
+        <div class="input-field">
+            <label for="vectorA">Enter Vector A (comma-separated):</label>
+            <input type="text" id="vectorA" placeholder="e.g., 1,2,3" required>
+        </div>
+        <div class="input-field">
+            <label for="vectorB">Enter Vector B (comma-separated):</label>
+            <input type="text" id="vectorB" placeholder="e.g., 4,5,6" required>
+        </div>
+        <button onclick="calculateDotProduct()">Calculate Dot Product</button>
+        <div id="vectorResult" class="result"></div>
+    </div>
+
+    <!-- Probability Calculator -->
+    <div id="probability" class="container calculator">
+        <h3>Probability Calculator</h3>
+        <p>Enter total outcomes:</p>
+        <input type="number" id="totalOutcomes">
+        <p>Enter favorable outcomes:</p>
+        <input type="number" id="favorableOutcomes">
+        <button onclick="calculateProbability()">Calculate Probability</button>
+        <div id="probabilityResult" class="result"></div>
+    </div>
+
+    <!-- Exponentiation and Logarithmic Calculator -->
+    <div id="exponentiation" class="container calculator">
+        <h3>Exponentiation & Logarithmic Calculator</h3>
+        <p>Enter base:</p>
+        <input type="number" id="exponentBase">
+        <p>Enter exponent:</p>
+        <input type="number" id="exponentPower">
+        <button onclick="calculateExponentiation()">Calculate Power</button>
+        <p>Enter number for logarithm:</p>
+        <input type="number" id="logNumber">
+        <button onclick="calculateLogarithm()">Calculate Log</button>
+        <div id="exponentiationResult" class="result"></div>
+    </div>
+
+    <!-- Simultaneous Equations Solver -->
+    <div id="simultaneous" class="container calculator">
+        <h3>Simultaneous Equations Solver (2x2)</h3>
+        <div class="input-field">
+            <label for="eq1a">Enter coefficient a (1st equation):</label>
+            <input type="number" id="eq1a" required>
+        </div>
+        <div class="input-field">
+            <label for="eq1b">Enter coefficient b (1st equation):</label>
+            <input type="number" id="eq1b" required>
+        </div>
+        <div class="input-field">
+            <label for="eq1c">Enter constant (1st equation):</label>
+            <input type="number" id="eq1c" required>
+        </div>
+        <div class="input-field">
+            <label for="eq2a">Enter coefficient a (2nd equation):</label>
+            <input type="number" id="eq2a" required>
+        </div>
+        <div class="input-field">
+            <label for="eq2b">Enter coefficient b (2nd equation):</label>
+            <input type="number" id="eq2b" required>
+        </div>
+        <div class="input-field">
+            <label for="eq2c">Enter constant (2nd equation):</label>
+            <input type="number" id="eq2c" required>
+        </div>
+        <button onclick="solveSimultaneous()">Solve</button>
+        <div id="simultaneousResult" class="result"></div>
+    </div>
+
+    <!-- Matrices and Determinants Calculator -->
+    <div id="matrices" class="container calculator">
+        <h3>Matrix Determinant Calculator</h3>
+        <p>Enter matrix size (2x2 or 3x3):</p>
+        <select id="matrixSize" onchange="updateMatrixInput()">
+            <option value="2">2x2</option>
+            <option value="3">3x3</option>
+        </select>
+        <div id="matrixInput"></div>
+        <button onclick="calculateMatrixDeterminant()">Calculate Determinant</button>
+        <div id="matrixResult" class="result"></div>
+    </div>
+
+    <!-- Circle Geometry Calculator -->
+    <div id="circle" class="container calculator">
+        <h3>Circle Geometry Calculator</h3>
+        <div class="input-field">
+            <label for="circleRadius">Enter Radius:</label>
+            <input type="number" id="circleRadiusInput" required>
+        </div>
+        <button onclick="calculateCircleGeometry()">Calculate Area & Circumference</button>
+        <div id="circleResult" class="result"></div>
+    </div>
+
+    <!-- Factorization Calculator -->
+    <div id="factorization" class="container calculator">
+        <h3>Factorization Calculator</h3>
+        <p>Enter number to factor:</p>
+        <input type="number" id="factorNumber">
+        <button onclick="factorizeNumber()">Factorize</button>
+        <div id="factorizationResult" class="result"></div>
+    </div>
+
+    <script>
+        // Show the selected calculator
+        function showCalculator(calcId) {
+            const calculators = document.querySelectorAll('.calculator');
+            calculators.forEach(calc => {
+                calc.classList.remove('active');
+            });
+            document.getElementById(calcId).classList.add('active');
+        }
+
+        // Quadratic Solver
+        function solveQuadratic() {
+            var a = parseFloat(document.getElementById("a").value);
+            var b = parseFloat(document.getElementById("b").value);
+            var c = parseFloat(document.getElementById("c").value);
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                document.getElementById("result").innerHTML = "Please enter valid numbers.";
+                return;
+            }
+            var discriminant = b * b - 4 * a * c;
+            if (discriminant > 0) {
+                var root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                var root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                document.getElementById("result").innerHTML = "x1 = " + root1 + ", x2 = " + root2;
+            } else if (discriminant === 0) {
+                var root = -b / (2 * a);
+                document.getElementById("result").innerHTML = "x = " + root;
+            } else {
+                document.getElementById("result").innerHTML = "No real roots.";
+            }
+        }
+
+        // Scientific Calculator
+        let scientificExpression = "";
+        function appendNumber(number) {
+            scientificExpression += number;
+            document.getElementById("scientificInput").value = scientificExpression;
+        }
+        function appendOperator(operator) {
+            scientificExpression += " " + operator + " ";
+            document.getElementById("scientificInput").value = scientificExpression;
+        }
+        function clearScientific() {
+            scientificExpression = "";
+            document.getElementById("scientificInput").value = "";
+        }
+        function calculateScientific() {
+            try {
+                var result = eval(scientificExpression);
+                document.getElementById("scientificInput").value = result;
+                scientificExpression = result.toString();
+            } catch (e) {
+                document.getElementById("scientificInput").value = "Error!";
+            }
+        }
+
+        // Area & Volume Calculator
+        function changeShape() {
+            const shape = document.getElementById("shapeSelector").value;
+            document.querySelectorAll(".shapeForm").forEach(form => {
+                form.style.display = "none";
+            });
+            document.getElementById(shape + "Form").style.display = "block";
+        }
+        function calculateCircle() {
+            var radius = parseFloat(document.getElementById("circleRadius").value);
+            if (isNaN(radius)) {
+                document.getElementById("areaVolumeResult").innerHTML = "Please enter a valid radius.";
+                return;
+            }
+            var area = Math.PI * radius * radius;
+            var circumference = 2 * Math.PI * radius;
+            document.getElementById("areaVolumeResult").innerHTML = `Area: ${area.toFixed(2)}<br>Circumference: ${circumference.toFixed(2)}`;
+        }
+        function calculateRectangle() {
+            var length = parseFloat(document.getElementById("rectangleLength").value);
+            var width = parseFloat(document.getElementById("rectangleWidth").value);
+            if (isNaN(length) || isNaN(width)) {
+                document.getElementById("areaVolumeResult").innerHTML = "Please enter valid values.";
+                return;
+            }
+            var area = length * width;
+            document.getElementById("areaVolumeResult").innerHTML = `Area: ${area.toFixed(2)}`;
+        }
+        function calculateSphere() {
+            var radius = parseFloat(document.getElementById("sphereRadius").value);
+            if (isNaN(radius)) {
+                document.getElementById("areaVolumeResult").innerHTML = "Please enter a valid radius.";
+                return;
+            }
+            var volume = (4/3) * Math.PI * Math.pow(radius, 3);
+            document.getElementById("areaVolumeResult").innerHTML = `Volume: ${volume.toFixed(2)}`;
+        }
+
+        // Vector Calculator
+        function calculateDotProduct() {
+            var vectorA = document.getElementById("vectorA").value.split(',').map(Number);
+            var vectorB = document.getElementById("vectorB").value.split(',').map(Number);
+            if (vectorA.length !== vectorB.length) {
+                document.getElementById("vectorResult").innerHTML = "Vectors must be of the same length!";
+                return;
+            }
+            var dotProduct = vectorA.reduce((sum, val, index) => sum + (val * vectorB[index]), 0);
+            document.getElementById("vectorResult").innerHTML = `Dot Product: ${dotProduct}`;
+        }
+
+        // Probability Calculator
+        function calculateProbability() {
+            var totalOutcomes = parseFloat(document.getElementById("totalOutcomes").value);
+            var favorableOutcomes = parseFloat(document.getElementById("favorableOutcomes").value);
+            if (isNaN(totalOutcomes) || isNaN(favorableOutcomes) || favorableOutcomes > totalOutcomes) {
+                document.getElementById("probabilityResult").innerHTML = "Please enter valid numbers.";
+                return;
+            }
+            var probability = favorableOutcomes / totalOutcomes;
+            document.getElementById("probabilityResult").innerHTML = `Probability: ${probability}`;
+        }
+
+        // Exponentiation and Logarithm Calculators
+        function calculateExponentiation() {
+            var base = parseFloat(document.getElementById("exponentBase").value);
+            var power = parseFloat(document.getElementById("exponentPower").value);
+            if (isNaN(base) || isNaN(power)) {
+                document.getElementById("exponentiationResult").innerHTML = "Please enter valid numbers.";
+                return;
+            }
+            var result = Math.pow(base, power);
+            document.getElementById("exponentiationResult").innerHTML = `Result: ${result}`;
+        }
+        function calculateLogarithm() {
+            var number = parseFloat(document.getElementById("logNumber").value);
+            if (isNaN(number) || number <= 0) {
+                document.getElementById("exponentiationResult").innerHTML = "Please enter a positive number.";
+                return;
+            }
+            var result = Math.log(number);
+            document.getElementById("exponentiationResult").innerHTML = `Logarithm: ${result}`;
+        }
+
+        // Simultaneous Equations Solver
+        function solveSimultaneous() {
+            var a1 = parseFloat(document.getElementById("eq1a").value);
+            var b1 = parseFloat(document.getElementById("eq1b").value);
+            var c1 = parseFloat(document.getElementById("eq1c").value);
+            var a2 = parseFloat(document.getElementById("eq2a").value);
+            var b2 = parseFloat(document.getElementById("eq2b").value);
+            var c2 = parseFloat(document.getElementById("eq2c").value);
+            if (isNaN(a1) || isNaN(b1) || isNaN(c1) || isNaN(a2) || isNaN(b2) || isNaN(c2)) {
+                document.getElementById("simultaneousResult").innerHTML = "Please enter valid numbers.";
+                return;
+            }
+
+            var determinant = a1 * b2 - a2 * b1;
+            if (determinant === 0) {
+                document.getElementById("simultaneousResult").innerHTML = "No unique solution.";
+                return;
+            }
+
+            var x = (c1 * b2 - c2 * b1) / determinant;
+            var y = (a1 * c2 - a2 * c1) / determinant;
+
+            document.getElementById("simultaneousResult").innerHTML = `x = ${x}, y = ${y}`;
+        }
+
+        // Matrix Determinant
+        function updateMatrixInput() {
+            var size = document.getElementById("matrixSize").value;
+            var matrixInput = document.getElementById("matrixInput");
+            matrixInput.innerHTML = "";
+
+            for (var i = 0; i < size; i++) {
+                for (var j = 0; j < size; j++) {
+                    matrixInput.innerHTML += `<input type="number" id="matrix${i}${j}" placeholder="a${i}${j}" style="width: 50px;">`;
+                }
+                matrixInput.innerHTML += "<br>";
+            }
+        }
+        function calculateMatrixDeterminant() {
+            var size = document.getElementById("matrixSize").value;
+            var matrix = [];
+            for (var i = 0; i < size; i++) {
+                var row = [];
+                for (var j = 0; j < size; j++) {
+                    var value = parseFloat(document.getElementById("matrix" + i + j).value);
+                    if (isNaN(value)) {
+                        document.getElementById("matrixResult").innerHTML = "Please enter valid numbers.";
+                        return;
+                    }
+                    row.push(value);
+                }
+                matrix.push(row);
+            }
+
+            var determinant = 0;
+            if (size === 2) {
+                determinant = matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+            } else if (size === 3) {
+                determinant = matrix[0][0] * (matrix[1][1] * matrix[2][2] - matrix[1][2] * matrix[2][1]) -
+                    matrix[0][1] * (matrix[1][0] * matrix[2][2] - matrix[1][2] * matrix[2][0]) +
+                    matrix[0][2] * (matrix[1][0] * matrix[2][1] - matrix[1][1] * matrix[2][0]);
+            }
+
+            document.getElementById("matrixResult").innerHTML = `Determinant: ${determinant}`;
+        }
+
+        // Circle Geometry
+        function calculateCircleGeometry() {
+            var radius = parseFloat(document.getElementById("circleRadiusInput").value);
+            if (isNaN(radius)) {
+                document.getElementById("circleResult").innerHTML = "Please enter a valid radius.";
+                return;
+            }
+            var area = Math.PI * radius * radius;
+            var circumference = 2 * Math.PI * radius;
+            document.getElementById("circleResult").innerHTML = `Area: ${area.toFixed(2)}<br>Circumference: ${circumference.toFixed(2)}`;
+        }
+
+        // Factorization
+        function factorizeNumber() {
+            var number = parseInt(document.getElementById("factorNumber").value);
+            if (isNaN(number)) {
+                document.getElementById("factorizationResult").innerHTML = "Please enter a valid number.";
+                return;
+            }
+            var factors = [];
+            for (var i = 1; i <= number; i++) {
+                if (number % i === 0) {
+                    factors.push(i);
+                }
+            }
+            document.getElementById("factorizationResult").innerHTML = `Factors: ${factors.join(", ")}`;
+        }
+    </script>
+</body>
+</html>
