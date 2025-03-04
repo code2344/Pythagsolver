@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Surds Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, select, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        label {
+            display: block;
+            font-size: 18px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+    <h1>Surds Calculator</h1>
+
+    <div>
+        <h3>Simplify the Surd:</h3>
+        <label for="surdInput">Enter a surd (e.g., √8, √18, 3√2):</label>
+        <input type="text" id="surdInput" placeholder="Enter a surd expression">
+        <button onclick="simplifySurd()">Simplify Surd</button>
+    </div>
+
+    <div>
+        <h3>Arithmetic Operations with Surds:</h3>
+        <label for="operation">Choose an operation:</label>
+        <select id="operation">
+            <option value="add">Add Surds</option>
+            <option value="subtract">Subtract Surds</option>
+            <option value="multiply">Multiply Surds</option>
+            <option value="divide">Divide Surds</option>
+        </select>
+        <label for="firstOperand">First Surd:</label>
+        <input type="text" id="firstOperand" placeholder="First Surd (e.g., 2√3)">
+        <label for="secondOperand">Second Surd:</label>
+        <input type="text" id="secondOperand" placeholder="Second Surd (e.g., √3)">
+        <button onclick="operateWithSurds()">Calculate</button>
+    </div>
+
+    <div>
+        <h3>Rationalize the Denominator:</h3>
+        <label for="rationalize">Enter the fraction (e.g., 1/√2):</label>
+        <input type="text" id="rationalize" placeholder="Enter fraction like 1/√2">
+        <button onclick="rationalizeDenominator()">Rationalize</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        // Function to simplify a surd
+        function simplifySurd() {
+            const input = document.getElementById('surdInput').value.trim();
+            const result = simplify(input);
+            document.getElementById('result').textContent = `Simplified Surd: ${result}`;
+        }
+
+        // Function to simplify surds (finding square roots of factors)
+        function simplify(expression) {
+            const regex = /(\d*)\s*√(\d+)/; // Regular expression to match numbers before √
+            const match = expression.match(regex);
+            if (match) {
+                let coefficient = match[1] ? parseInt(match[1]) : 1;
+                let radicand = parseInt(match[2]);
+
+                // Simplify the square root if possible
+                let factor = 1;
+                for (let i = 2; i <= radicand; i++) {
+                    while (radicand % (i * i) === 0) {
+                        radicand /= (i * i);
+                        factor *= i;
+                    }
+                }
+
+                if (factor > 1) {
+                    coefficient *= factor;
+                    return `${coefficient}√${radicand}`;
+                } else {
+                    return `${coefficient}√${radicand}`;
+                }
+            }
+            return expression; // If not a valid surd, return original expression
+        }
+
+        // Function for arithmetic operations with surds
+        function operateWithSurds() {
+            const operation = document.getElementById('operation').value;
+            const firstOperand = parseSurd(document.getElementById('firstOperand').value.trim());
+            const secondOperand = parseSurd(document.getElementById('secondOperand').value.trim());
+
+            if (firstOperand && secondOperand) {
+                let result;
+                switch (operation) {
+                    case 'add':
+                        result = addSurds(firstOperand, secondOperand);
+                        break;
+                    case 'subtract':
+                        result = subtractSurds(firstOperand, secondOperand);
+                        break;
+                    case 'multiply':
+                        result = multiplySurds(firstOperand, secondOperand);
+                        break;
+                    case 'divide':
+                        result = divideSurds(firstOperand, secondOperand);
+                        break;
+                    default:
+                        result = 'Invalid operation';
+                }
+                document.getElementById('result').textContent = `Result: ${result}`;
+            } else {
+                document.getElementById('result').textContent = 'Invalid surd input.';
+            }
+        }
+
+        // Parse surd input
+        function parseSurd(input) {
+            const regex = /(\d*)√(\d+)/;
+            const match = input.match(regex);
+            if (match) {
+                const coefficient = match[1] ? parseInt(match[1]) : 1;
+                const radicand = parseInt(match[2]);
+                return { coefficient, radicand };
+            }
+            return null;
+        }
+
+        // Add surds
+        function addSurds(first, second) {
+            if (first.radicand === second.radicand) {
+                return `${first.coefficient + second.coefficient}√${first.radicand}`;
+            }
+            return `${first.coefficient}√${first.radicand} + ${second.coefficient}√${second.radicand}`;
+        }
+
+        // Subtract surds
+        function subtractSurds(first, second) {
+            if (first.radicand === second.radicand) {
+                return `${first.coefficient - second.coefficient}√${first.radicand}`;
+            }
+            return `${first.coefficient}√${first.radicand} - ${second.coefficient}√${second.radicand}`;
+        }
+
+        // Multiply surds
+        function multiplySurds(first, second) {
+            const newCoefficient = first.coefficient * second.coefficient;
+            const newRadicand = first.radicand * second.radicand;
+            return `${newCoefficient}√${newRadicand}`;
+        }
+
+        // Divide surds
+        function divideSurds(first, second) {
+            const newCoefficient = first.coefficient / second.coefficient;
+            const newRadicand = first.radicand / second.radicand;
+            return `${newCoefficient}√${newRadicand}`;
+        }
+
+        // Rationalize the denominator (i.e., convert 1/√2 to √2/2)
+        function rationalizeDenominator() {
+            const input = document.getElementById('rationalize').value.trim();
+            const match = input.match(/^(\d+)\/√(\d+)$/);
+            if (match) {
+                const numerator = match[1];
+                const denominator = match[2];
+                const rationalized = `${numerator}√${denominator}/${denominator}`;
+                document.getElementById('result').textContent = `Rationalized form: ${rationalized}`;
+            } else {
+                document.getElementById('result').textContent = 'Invalid input. Use the form 1/√2.';
+            }
+        }
+    </script>
+</body>
+</html>
