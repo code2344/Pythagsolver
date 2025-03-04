@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Right Angle Triangle Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input, select, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+        }
+        label {
+            display: block;
+            font-size: 18px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Right Angle Triangle Calculator</h1>
+
+    <div>
+        <h3>Calculate Hypotenuse (c) using a and b:</h3>
+        <label for="sideA">Enter side A:</label>
+        <input type="number" id="sideA" placeholder="Side A (leg)" required>
+        <label for="sideB">Enter side B:</label>
+        <input type="number" id="sideB" placeholder="Side B (leg)" required>
+        <button onclick="calculateHypotenuse()">Calculate Hypotenuse (c)</button>
+    </div>
+
+    <div>
+        <h3>Calculate a or b using the other side and the hypotenuse:</h3>
+        <label for="calcChoice">Choose Calculation:</label>
+        <select id="calcChoice">
+            <option value="a">Find side A</option>
+            <option value="b">Find side B</option>
+        </select>
+        <label for="sideC">Enter side C (hypotenuse):</label>
+        <input type="number" id="sideC" placeholder="Side C (hypotenuse)" required>
+        <label for="knownSide">Enter the known side (A or B):</label>
+        <input type="number" id="knownSide" placeholder="Known side (A or B)" required>
+        <button onclick="calculateOtherSide()">Calculate</button>
+    </div>
+
+    <div>
+        <h3>Check if the triangle is a Right Angle:</h3>
+        <label for="checkSideA">Enter side A:</label>
+        <input type="number" id="checkSideA" placeholder="Side A (leg)" required>
+        <label for="checkSideB">Enter side B:</label>
+        <input type="number" id="checkSideB" placeholder="Side B (leg)" required>
+        <label for="checkSideC">Enter side C:</label>
+        <input type="number" id="checkSideC" placeholder="Side C (hypotenuse)" required>
+        <button onclick="checkRightAngle()">Check if Right Angle</button>
+    </div>
+
+    <div id="result"></div>
+
+    <script>
+        // Function to calculate the hypotenuse (c)
+        function calculateHypotenuse() {
+            const a = parseFloat(document.getElementById('sideA').value);
+            const b = parseFloat(document.getElementById('sideB').value);
+            if (isNaN(a) || isNaN(b)) {
+                alert("Please enter valid numbers for sides A and B.");
+                return;
+            }
+            const c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+            document.getElementById('result').textContent = `The hypotenuse (c) is: ${c.toFixed(2)}`;
+        }
+
+        // Function to calculate side A or B given the hypotenuse and the other side
+        function calculateOtherSide() {
+            const sideC = parseFloat(document.getElementById('sideC').value);
+            const knownSide = parseFloat(document.getElementById('knownSide').value);
+            const calcChoice = document.getElementById('calcChoice').value;
+            
+            if (isNaN(sideC) || isNaN(knownSide)) {
+                alert("Please enter valid numbers for the hypotenuse and the known side.");
+                return;
+            }
+
+            if (calcChoice === 'a') {
+                // Calculate side A
+                const a = Math.sqrt(Math.pow(sideC, 2) - Math.pow(knownSide, 2));
+                document.getElementById('result').textContent = `The side A is: ${a.toFixed(2)}`;
+            } else if (calcChoice === 'b') {
+                // Calculate side B
+                const b = Math.sqrt(Math.pow(sideC, 2) - Math.pow(knownSide, 2));
+                document.getElementById('result').textContent = `The side B is: ${b.toFixed(2)}`;
+            }
+        }
+
+        // Function to check if the sides form a right-angle triangle
+        function checkRightAngle() {
+            const a = parseFloat(document.getElementById('checkSideA').value);
+            const b = parseFloat(document.getElementById('checkSideB').value);
+            const c = parseFloat(document.getElementById('checkSideC').value);
+            
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                alert("Please enter valid numbers for sides A, B, and C.");
+                return;
+            }
+
+            // Check if it satisfies the Pythagorean theorem
+            if (Math.pow(a, 2) + Math.pow(b, 2) === Math.pow(c, 2)) {
+                document.getElementById('result').textContent = "This is a right-angled triangle!";
+            } else {
+                document.getElementById('result').textContent = "This is not a right-angled triangle.";
+            }
+        }
+    </script>
+</body>
+</html>
