@@ -129,30 +129,32 @@
     <div id="scientific" class="container calculator">
         <h3>Scientific Calculator</h3>
         <input type="text" id="scientificInput" readonly>
-        <div>
-            <button class="calc-button" onclick="appendNumber(7)">7</button>
-            <button class="calc-button" onclick="appendNumber(8)">8</button>
-            <button class="calc-button" onclick="appendNumber(9)">9</button>
-            <button class="calc-button" onclick="appendOperator('+')">+</button>
-        </div>
-        <div>
-            <button class="calc-button" onclick="appendNumber(4)">4</button>
-            <button class="calc-button" onclick="appendNumber(5)">5</button>
-            <button class="calc-button" onclick="appendNumber(6)">6</button>
-            <button class="calc-button" onclick="appendOperator('-')">-</button>
-        </div>
-        <div>
-            <button class="calc-button" onclick="appendNumber(1)">1</button>
-            <button class="calc-button" onclick="appendNumber(2)">2</button>
-            <button class="calc-button" onclick="appendNumber(3)">3</button>
-            <button class="calc-button" onclick="appendOperator('*')">*</button>
-        </div>
-        <div>
-            <button class="calc-button" onclick="appendNumber(0)">0</button>
-            <button class="calc-button" onclick="clearScientific()">C</button>
-            <button class="calc-button" onclick="calculateScientific()">=</button>
-            <button class="calc-button" onclick="appendOperator('/')">/</button>
-        </div>
+        <table>    
+            <tr>
+                <td><button class="calc-button" onclick="appendNumber(7)">7</button></td>
+                <td><button class="calc-button" onclick="appendNumber(8)">8</button></td>
+                <td><button class="calc-button" onclick="appendNumber(9)">9</button></td>
+                <td><button class="calc-button" onclick="appendOperator('+')">+</button></td>
+            </tr>
+            <tr>
+                <td><button class="calc-button" onclick="appendNumber(4)">4</button></td>
+                <td><button class="calc-button" onclick="appendNumber(5)">5</button></td>
+                <td><button class="calc-button" onclick="appendNumber(6)">6</button></td>
+                <td><button class="calc-button" onclick="appendOperator('-')">-</button></td>
+            </tr>
+            <tr>
+                <td><button class="calc-button" onclick="appendNumber(1)">1</button></td>
+                <td><button class="calc-button" onclick="appendNumber(2)">2</button></td>
+                <td><button class="calc-button" onclick="appendNumber(3)">3</button></td>
+                <td><button class="calc-button" onclick="appendOperator('*')">*</button></td>
+            </tr>
+            <tr>
+                <td><button class="calc-button" onclick="appendNumber(0)">0</button></td>
+                <td><button class="calc-button" onclick="clearScientific()">C</button></td>
+                <td><button class="calc-button" onclick="calculateScientific()">=</button></td>
+                <td><button class="calc-button" onclick="appendOperator('/')">/</button></td>
+            </tr>
+        </table>
     </div>
 
     <!-- Area and Volume Calculator -->
