@@ -49,6 +49,7 @@
     <h1>RSA Public-Private Key Encryption</h1>
     <div class="container">
         <button onclick="generateKeyPair()">Generate RSA Key Pair</button>
+        <button onclick="downloadKeys()">Download Key Pair</button>
 
         <h3>Public Key:</h3>
         <textarea id="publicKey" rows="5" readonly></textarea>
@@ -75,6 +76,17 @@
         let privateKey;
         let publicKey;
 
+        // Load keys from cookies (if any)
+        window.onload = () => {
+            const savedPublicKey = getCookie("publicKey");
+            const savedPrivateKey = getCookie("privateKey");
+            if (savedPublicKey && savedPrivateKey) {
+                document.getElementById("publicKey").value = savedPublicKey;
+                document.getElementById("privateKey").value = savedPrivateKey;
+                console.log("Keys loaded from cookies.");
+            }
+        };
+
         async function generateKeyPair() {
             try {
                 // Generate RSA key pair
@@ -96,9 +108,13 @@
                 const exportedPublicKey = await exportKey(publicKey);
                 const exportedPrivateKey = await exportKey(privateKey, 'private');
 
-                // Display the keys
+                // Display the keys in text areas
                 document.getElementById("publicKey").value = exportedPublicKey;
                 document.getElementById("privateKey").value = exportedPrivateKey;
+
+                // Save keys to cookies
+                setCookie("publicKey", exportedPublicKey, 365);
+                setCookie("privateKey", exportedPrivateKey, 365);
 
                 alert("Key Pair Generated Successfully!");
             } catch (error) {
@@ -117,6 +133,43 @@
             const base64 = window.btoa(binary);
             const pem = `-----BEGIN ${type}-----\n${base64.match(/.{1,64}/g).join('\n')}\n-----END ${type}-----`;
             return pem;
+        }
+
+        // Save cookie function
+        function setCookie(name, value, days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            const expires = "expires=" + date.toUTCString();
+            document.cookie = `${name}=${value}; ${expires}; path=/`;
+        }
+
+        // Get cookie function
+        function getCookie(name) {
+            const decodedCookie = decodeURIComponent(document.cookie);
+            const cookies = decodedCookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                let c = cookies[i].trim();
+                if (c.indexOf(name + "=") === 0) {
+                    return c.substring(name.length + 1, c.length);
+                }
+            }
+            return "";
+        }
+
+        function downloadKeys() {
+            const publicKeyText = document.getElementById("publicKey").value;
+            const privateKeyText = document.getElementById("privateKey").value;
+
+            if (!publicKeyText || !privateKeyText) {
+                alert("Please generate or load the key pair first.");
+                return;
+            }
+
+            const blob = new Blob([`Public Key:\n${publicKeyText}\n\nPrivate Key:\n${privateKeyText}`], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'rsa_key_pair.key';
+            link.click();
         }
 
         async function encryptMessage() {
