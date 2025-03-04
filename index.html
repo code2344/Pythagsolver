@@ -22,6 +22,7 @@
             margin-top: 20px;
             font-size: 18px;
             font-weight: bold;
+            word-wrap: break-word;
         }
     </style>
 </head>
@@ -31,9 +32,9 @@
     <div>
         <h3>Calculate Hypotenuse (c) using a and b:</h3>
         <label for="sideA">Enter side A:</label>
-        <input type="number" id="sideA" placeholder="Side A (leg)" required>
+        <input type="text" id="sideA" placeholder="Side A (leg), e.g. 16-11" required>
         <label for="sideB">Enter side B:</label>
-        <input type="number" id="sideB" placeholder="Side B (leg)" required>
+        <input type="text" id="sideB" placeholder="Side B (leg), e.g. 3*5" required>
         <button onclick="calculateHypotenuse()">Calculate Hypotenuse (c)</button>
     </div>
 
@@ -45,68 +46,76 @@
             <option value="b">Find side B</option>
         </select>
         <label for="sideC">Enter side C (hypotenuse):</label>
-        <input type="number" id="sideC" placeholder="Side C (hypotenuse)" required>
+        <input type="text" id="sideC" placeholder="Side C (hypotenuse), e.g. 13+2" required>
         <label for="knownSide">Enter the known side (A or B):</label>
-        <input type="number" id="knownSide" placeholder="Known side (A or B)" required>
+        <input type="text" id="knownSide" placeholder="Known side (A or B), e.g. 5*2" required>
         <button onclick="calculateOtherSide()">Calculate</button>
     </div>
 
     <div>
         <h3>Check if the triangle is a Right Angle:</h3>
         <label for="checkSideA">Enter side A:</label>
-        <input type="number" id="checkSideA" placeholder="Side A (leg)" required>
+        <input type="text" id="checkSideA" placeholder="Side A (leg), e.g. 5+3" required>
         <label for="checkSideB">Enter side B:</label>
-        <input type="number" id="checkSideB" placeholder="Side B (leg)" required>
+        <input type="text" id="checkSideB" placeholder="Side B (leg), e.g. 12-4" required>
         <label for="checkSideC">Enter side C:</label>
-        <input type="number" id="checkSideC" placeholder="Side C (hypotenuse)" required>
+        <input type="text" id="checkSideC" placeholder="Side C (hypotenuse), e.g. 13" required>
         <button onclick="checkRightAngle()">Check if Right Angle</button>
     </div>
 
     <div id="result"></div>
 
     <script>
+        // Function to evaluate mathematical expressions safely
+        function evaluateExpression(expr) {
+            try {
+                return eval(expr);
+            } catch (error) {
+                alert("Invalid expression. Please enter a valid mathematical expression.");
+                return NaN;
+            }
+        }
+
         // Function to calculate the hypotenuse (c)
         function calculateHypotenuse() {
-            const a = parseFloat(document.getElementById('sideA').value);
-            const b = parseFloat(document.getElementById('sideB').value);
+            const a = evaluateExpression(document.getElementById('sideA').value);
+            const b = evaluateExpression(document.getElementById('sideB').value);
             if (isNaN(a) || isNaN(b)) {
-                alert("Please enter valid numbers for sides A and B.");
                 return;
             }
             const c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
-            document.getElementById('result').textContent = `The hypotenuse (c) is: ${c.toFixed(2)}`;
+            document.getElementById('result').textContent = `The hypotenuse (c) is: ${c}`;
         }
 
         // Function to calculate side A or B given the hypotenuse and the other side
         function calculateOtherSide() {
-            const sideC = parseFloat(document.getElementById('sideC').value);
-            const knownSide = parseFloat(document.getElementById('knownSide').value);
+            const sideC = evaluateExpression(document.getElementById('sideC').value);
+            const knownSide = evaluateExpression(document.getElementById('knownSide').value);
             const calcChoice = document.getElementById('calcChoice').value;
-            
+
             if (isNaN(sideC) || isNaN(knownSide)) {
-                alert("Please enter valid numbers for the hypotenuse and the known side.");
                 return;
             }
 
+            let result;
             if (calcChoice === 'a') {
                 // Calculate side A
-                const a = Math.sqrt(Math.pow(sideC, 2) - Math.pow(knownSide, 2));
-                document.getElementById('result').textContent = `The side A is: ${a.toFixed(2)}`;
+                result = Math.sqrt(Math.pow(sideC, 2) - Math.pow(knownSide, 2));
+                document.getElementById('result').textContent = `The side A is: ${result}`;
             } else if (calcChoice === 'b') {
                 // Calculate side B
-                const b = Math.sqrt(Math.pow(sideC, 2) - Math.pow(knownSide, 2));
-                document.getElementById('result').textContent = `The side B is: ${b.toFixed(2)}`;
+                result = Math.sqrt(Math.pow(sideC, 2) - Math.pow(knownSide, 2));
+                document.getElementById('result').textContent = `The side B is: ${result}`;
             }
         }
 
         // Function to check if the sides form a right-angle triangle
         function checkRightAngle() {
-            const a = parseFloat(document.getElementById('checkSideA').value);
-            const b = parseFloat(document.getElementById('checkSideB').value);
-            const c = parseFloat(document.getElementById('checkSideC').value);
-            
+            const a = evaluateExpression(document.getElementById('checkSideA').value);
+            const b = evaluateExpression(document.getElementById('checkSideB').value);
+            const c = evaluateExpression(document.getElementById('checkSideC').value);
+
             if (isNaN(a) || isNaN(b) || isNaN(c)) {
-                alert("Please enter valid numbers for sides A, B, and C.");
                 return;
             }
 
